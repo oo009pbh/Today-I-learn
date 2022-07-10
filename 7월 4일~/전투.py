@@ -1,4 +1,3 @@
-from calendar import c
 from sys import stdin
 from collections import defaultdict
 
