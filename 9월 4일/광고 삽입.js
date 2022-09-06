@@ -13,31 +13,41 @@ function intToTime (time) {
 }
 
 function solution(play_time, adv_time, logs) {
-    let answer = [0, 0];
-    let new_logs = [];
     play_time = timeToInt(play_time);
     adv_time = timeToInt(adv_time);
+    let all_time = Array.from({length: play_time + 1}, () => 0);
+
     for (let log of logs) {
         let [start, end] = log.split('-');
         start = timeToInt(start);
         end = timeToInt(end);
-        new_logs.push([start, end]);
+        all_time[start] += 1;
+        all_time[end] -= 1;
     }
-    new_logs.sort((a, b) => a[0] - b[0]);
-    for (let [i, log] of new_logs.entries()) {
-        let end_time = log[0] + adv_time;
-        if (end_time <= play_time) {
-            let value = 0;
-            for (let j = i ; j < new_logs.length; j++) {
-                if (new_logs[j][0] <= end_time) {
-                    value += end_time - new_logs[j][0];
-                } else break;
+    for (let i = 1; i < all_time.length; i++) {
+        all_time[i] = all_time[i] + all_time[i - 1];
+    }
+    for (let i = 1; i < all_time.length; i++) {
+        all_time[i] = all_time[i] + all_time[i - 1];
+    }
+    let max_val = 0;
+    let max_time = 0;
+    for (let i = adv_time - 1; i < all_time.length; i++) {
+        if (i >= adv_time) {
+            if (max_val < all_time[i] - all_time[i - adv_time]) {
+                max_val = all_time[i] - all_time[i - adv_time];
+                max_time = i - adv_time + 1
             }
-            answer = answer[1] < value ? [log[0], value] : answer;
+        }
+        else {
+            if (max_val < all_time[i]) {
+                max_val = all_time[i];
+                max_time = i - adv_time + 1;
+            }
         }
     }
 
-    return intToTime(answer[0]);
+    return intToTime(max_time);
 }
 
 console.log(solution(	"02:03:55", "00:14:15", ["01:20:15-01:45:14", "00:25:50-00:48:29", "00:40:31-01:00:00", "01:37:44-02:02:30", "01:30:59-01:53:29"]))
