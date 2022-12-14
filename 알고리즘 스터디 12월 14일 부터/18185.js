@@ -17,10 +17,13 @@ rl.on('close', () => {
     let answer = 0;
     for (let i = 0 ; i < N; i++){
         if (arr[i] && i < N - 2 && arr[i + 1] > arr[i + 2]) {
+            let diff = Math.min(arr[i], arr[i + 1] - arr[i + 2]);
+            arr[i] -= diff;
+            arr[i + 1] -= diff;
+            answer += diff * 5;
             answer += checkRamen(arr, i, N);
         } else if (arr[i]) {
             answer += checkRamen(arr, i, N);
-
         }
     }
     console.log(answer);
